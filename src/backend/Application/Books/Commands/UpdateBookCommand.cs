@@ -19,10 +19,12 @@ public class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand, BookD
 
     public async Task<BookDto> Handle(UpdateBookCommand request)
     {
-        Book? bookToUpdate = await applicationDbContext.Books.FindAsync(request.Id);
+        Book? bookToUpdate = await applicationDbContext.Books.FindAsync(request.Id) ?? throw new KeyNotFoundException($"No book found with ID {request.Id}");
 
-        bookToUpdate.Title = request.Title;
-        bookToUpdate.Author = request.Author;
+        // S'assurer que les champs ne soient pas null
+        if (request.Title is not null) bookToUpdate.Title = request.Title;
+        if (request.Author is not null) bookToUpdate.Author = request.Author;
+
         applicationDbContext.Books.Update(bookToUpdate);
         await applicationDbContext.SaveChangesAsync();
 

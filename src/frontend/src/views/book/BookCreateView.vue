@@ -17,7 +17,7 @@ const book = ref<Book>({
 })
 
 // Ne pas retirer.
-watch(book, () => console.log(`Une modification est survenue!`, book.value))
+watch(book, () => console.log(`Une modification est survenue!`, book.value), {deep : true})
 
 const isValid = computed(
   () =>

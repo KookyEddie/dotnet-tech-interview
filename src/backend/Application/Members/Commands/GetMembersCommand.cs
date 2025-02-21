@@ -24,8 +24,9 @@ public class GetMembersRequestHandler : IRequestHandler<GetMembersRequest, List<
                     EmailAddress = member.EmailAddress,
                     PhoneNumber = member.PhoneNumber
                 })
-                .ToListAsync())
-            .Where(member => Regexes.PhoneNumberRegex().IsMatch(member.PhoneNumber))
-            .ToList();
+                .ToListAsync());
+                // J'ai enlevé le regex qui vérifie que le téléphone est correcte, mais si vous voulez
+                // effectuer la vérification quand même, une option serait de sélectionner tous les membres comme ci-haut,
+                //  et retourner ceci : return members.Where(member => Regexes.PhoneNumberRegex().IsMatch(member.PhoneNumber ?? "")).ToList();
     }
 }

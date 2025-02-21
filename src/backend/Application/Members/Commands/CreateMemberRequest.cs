@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using tech_interview_api.Application.Common;
 using tech_interview_api.Domain;
 using tech_interview_api.Infrastructure.Persistence;
@@ -18,6 +19,13 @@ public class CreateMemberRequestHandler : IRequestHandler<CreateMemberRequest>
 
     public async Task<bool> Handle(CreateMemberRequest request)
     {
+        // Vérifie avant si le nouveau email du membre correspond à un email
+        // déjà inscrit dans la base de données
+        // En cas d'erreur, retourn un exception 
+        if (await context.Members.AnyAsync(member => member.EmailAddress == request.EmailAddress)) {
+            throw new InvalidOperationException("Un membre avec ce email existe déjà.");
+        }
+
         var member = new Member
         {
             Name = request.Name,

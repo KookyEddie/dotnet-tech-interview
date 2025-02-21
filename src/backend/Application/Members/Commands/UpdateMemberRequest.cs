@@ -24,11 +24,15 @@ public partial class UpdateMemberRequestHandler : IRequestHandler<UpdateMemberRe
 
         if (request.EmailAddress is not null && !Regexes.EmailRegex().IsMatch(request.EmailAddress)) { throw new ArgumentException("Email address is not valid"); }
 
-        Member? memberToUpdate = await context.Members.FindAsync(request.EmailAddress);
+        // La fonction FindAsync cherche un élément selon la clé primaire, EmailAddress n'est pas la clé primaire, Id l'est.
+        // Si le membre ID est null, throw une exception
+        Member? memberToUpdate = await context.Members.FindAsync(request.Id) ?? throw new KeyNotFoundException($"No member found with ID {request.Id}");
 
-        memberToUpdate.Name = request.Name;
-        memberToUpdate.EmailAddress = request.EmailAddress;
-        memberToUpdate.PhoneNumber = request.PhoneNumber;
+        // S'assure que les champs ne soient pas null
+        if (request.Name is not null) memberToUpdate.Name = request.Name;
+        if (request.EmailAddress is not null) memberToUpdate.EmailAddress = request.EmailAddress;
+        if (request.PhoneNumber is not null) memberToUpdate.PhoneNumber = request.PhoneNumber;
+
         context.Members.Update(memberToUpdate);
         await context.SaveChangesAsync();
 

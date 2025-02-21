@@ -39,7 +39,9 @@ export const useBookStore = defineStore('book', () => {
 })
 
 export interface Book {
+  value(arg0: string, value: any): any
   id: number
   title: string
   author: string
+  isAvailable: boolean
 }

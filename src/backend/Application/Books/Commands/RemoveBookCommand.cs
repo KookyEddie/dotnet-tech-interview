@@ -16,7 +16,8 @@ public class RemoveBookCommandHandler : IRequestHandler<RemoveBookCommand>
 
     public async Task<bool> Handle(RemoveBookCommand request)
     {
-        Book? book = await applicationDbContext.Books.FindAsync(request.Id);
+        // Ajout d'un throw pour s'assurer que le système ne plante pas si le book ID est null
+        Book? book = await applicationDbContext.Books.FindAsync(request.Id) ?? throw new KeyNotFoundException($"Book ID {request.Id} not found.");
         applicationDbContext.Books.Remove(book);
         await applicationDbContext.SaveChangesAsync();
         return true;
